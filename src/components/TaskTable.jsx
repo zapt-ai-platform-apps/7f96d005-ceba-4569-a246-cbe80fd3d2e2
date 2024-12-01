@@ -36,7 +36,7 @@ function TaskTable(props) {
 
   return (
     <div class="bg-white p-6 rounded-lg shadow-md">
-      <h2 class="text-2xl font-bold mb-4 text-purple-600">Task List</h2>
+      <h2 class="text-2xl font-bold mb-4 text-blue-900">Task List</h2>
       <input
         class="w-full p-3 mb-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-400 focus:border-transparent box-border"
         type="text"

@@ -1,7 +1,15 @@
 import { createSignal, Show } from 'solid-js';
 
 function TaskForm(props) {
-  const [task, setTask] = createSignal(props.initialTask || {});
+  const [task, setTask] = createSignal(props.initialTask || {
+    taskDescription: '',
+    priority: '',
+    project: '',
+    dueDate: '',
+    status: '',
+    owner: '',
+    company: ''
+  });
   const [loading, setLoading] = createSignal(false);
 
   const handleSubmit = async (e) => {
@@ -13,7 +21,7 @@ function TaskForm(props) {
 
   return (
     <div class="bg-white p-6 rounded-lg shadow-md mb-8">
-      <h2 class="text-2xl font-bold mb-4 text-purple-600">
+      <h2 class="text-2xl font-bold mb-4 text-blue-900">
         {props.isEdit ? 'Edit Task' : 'Add New Task'}
       </h2>
       <form onSubmit={handleSubmit} class="space-y-4">

@@ -62,7 +62,15 @@ function App() {
   const handleAddTask = () => {
     setShowForm(true);
     setIsEdit(false);
-    setInitialTask({});
+    setInitialTask({
+      taskDescription: '',
+      priority: '',
+      project: '',
+      dueDate: '',
+      status: '',
+      owner: '',
+      company: ''
+    });
   };
 
   const handleEditTask = (task) => {
@@ -146,7 +154,7 @@ function App() {
       <Show when={currentPage() === 'homePage'} fallback={
         <div class="flex items-center justify-center min-h-screen">
           <div class="w-full max-w-md p-8 bg-white rounded-xl shadow-lg">
-            <h2 class="text-3xl font-bold mb-6 text-center text-purple-600">Sign in with ZAPT</h2>
+            <h2 class="text-3xl font-bold mb-6 text-center text-blue-900">Sign in with ZAPT</h2>
             <a
               href="https://www.zapt.ai"
               target="_blank"
@@ -168,7 +176,7 @@ function App() {
       }>
         <div class="max-w-6xl mx-auto">
           <div class="flex justify-between items-center mb-8">
-            <h1 class="text-4xl font-bold text-purple-600">To Do List</h1>
+            <h1 class="text-4xl font-bold text-blue-900">To Do List</h1>
             <button
               class="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-6 rounded-full shadow-md focus:outline-none focus:ring-2 focus:ring-red-400 cursor-pointer transition duration-300 ease-in-out transform hover:scale-105"
               onClick={handleSignOut}
