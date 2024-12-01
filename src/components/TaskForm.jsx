@@ -1,16 +1,44 @@
-import { createSignal, Show } from 'solid-js';
+import { createSignal, Show, onMount } from 'solid-js';
+import { fetchTasks } from '../services/taskService';
 
 function TaskForm(props) {
-  const [task, setTask] = createSignal(props.initialTask || {
-    taskDescription: '',
-    priority: '',
-    project: '',
-    dueDate: '',
-    status: '',
-    owner: '',
-    company: ''
-  });
+  const [task, setTask] = createSignal(
+    props.initialTask || {
+      taskDescription: '',
+      priority: '',
+      project: '',
+      dueDate: '',
+      status: '',
+      owner: '',
+      company: '',
+    }
+  );
   const [loading, setLoading] = createSignal(false);
+  const [priorityOptions] = createSignal(['Low', 'Normal', 'High']);
+  const [statusOptions] = createSignal(['Open', 'Closed']);
+  const [projectOptions, setProjectOptions] = createSignal([]);
+  const [ownerOptions, setOwnerOptions] = createSignal([]);
+  const [companyOptions, setCompanyOptions] = createSignal([]);
+
+  onMount(async () => {
+    try {
+      const tasksData = await fetchTasks(props.token);
+      const projects = [
+        ...new Set(tasksData.map((t) => t.project).filter(Boolean)),
+      ];
+      const owners = [
+        ...new Set(tasksData.map((t) => t.owner).filter(Boolean)),
+      ];
+      const companies = [
+        ...new Set(tasksData.map((t) => t.company).filter(Boolean)),
+      ];
+      setProjectOptions(projects);
+      setOwnerOptions(owners);
+      setCompanyOptions(companies);
+    } catch (error) {
+      console.error('Error fetching task options:', error);
+    }
+  });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -35,48 +63,81 @@ function TaskForm(props) {
           class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-400 focus:border-transparent box-border"
           required
         />
-        <input
-          type="text"
-          placeholder="Priority"
+
+        <select
           value={task().priority}
           onInput={(e) => setTask({ ...task(), priority: e.target.value })}
-          class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-400 focus:border-transparent box-border"
-        />
+          class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-400 focus:border-transparent cursor-pointer"
+        >
+          <option value="">Select Priority</option>
+          <For each={priorityOptions()}>
+            {(option) => <option value={option}>{option}</option>}
+          </For>
+        </select>
+
         <input
           type="text"
           placeholder="Project"
+          list="projectOptions"
           value={task().project}
           onInput={(e) => setTask({ ...task(), project: e.target.value })}
           class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-400 focus:border-transparent box-border"
         />
-        <input
-          type="date"
-          placeholder="Due Date"
-          value={task().dueDate}
-          onInput={(e) => setTask({ ...task(), dueDate: e.target.value })}
-          class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-400 focus:border-transparent box-border"
-        />
-        <input
-          type="text"
-          placeholder="Status"
+        <datalist id="projectOptions">
+          <For each={projectOptions()}>
+            {(option) => <option value={option} />}
+          </For>
+        </datalist>
+
+        <div>
+          <label class="block text-gray-700 mb-1">Due Date</label>
+          <input
+            type="date"
+            value={task().dueDate}
+            onInput={(e) => setTask({ ...task(), dueDate: e.target.value })}
+            class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-400 focus:border-transparent box-border"
+          />
+        </div>
+
+        <select
           value={task().status}
           onInput={(e) => setTask({ ...task(), status: e.target.value })}
-          class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-400 focus:border-transparent box-border"
-        />
+          class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-400 focus:border-transparent cursor-pointer"
+        >
+          <option value="">Select Status</option>
+          <For each={statusOptions()}>
+            {(option) => <option value={option}>{option}</option>}
+          </For>
+        </select>
+
         <input
           type="text"
           placeholder="Owner"
+          list="ownerOptions"
           value={task().owner}
           onInput={(e) => setTask({ ...task(), owner: e.target.value })}
           class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-400 focus:border-transparent box-border"
         />
+        <datalist id="ownerOptions">
+          <For each={ownerOptions()}>
+            {(option) => <option value={option} />}
+          </For>
+        </datalist>
+
         <input
           type="text"
           placeholder="Company"
+          list="companyOptions"
           value={task().company}
           onInput={(e) => setTask({ ...task(), company: e.target.value })}
           class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-400 focus:border-transparent box-border"
         />
+        <datalist id="companyOptions">
+          <For each={companyOptions()}>
+            {(option) => <option value={option} />}
+          </For>
+        </datalist>
+
         <div class="flex space-x-4">
           <button
             type="submit"

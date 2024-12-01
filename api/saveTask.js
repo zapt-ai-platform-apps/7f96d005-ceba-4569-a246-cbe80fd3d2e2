@@ -41,16 +41,24 @@ export default async function handler(req, res) {
     const sql = postgres(process.env.COCKROACH_DB_URL);
     const db = drizzle(sql);
 
-    const result = await db.insert(tasks).values({
-      taskDescription,
-      priority,
-      project,
-      dueDate: dueDate ? new Date(dueDate) : null,
-      status,
-      owner,
-      company,
-      userId: user.id,
-    }).returning();
+    const parsedDueDate = dueDate ? new Date(dueDate) : null;
+    if (parsedDueDate && isNaN(parsedDueDate.getTime())) {
+      return res.status(400).json({ error: 'Invalid due date' });
+    }
+
+    const result = await db
+      .insert(tasks)
+      .values({
+        taskDescription,
+        priority,
+        project,
+        dueDate: parsedDueDate,
+        status,
+        owner,
+        company,
+        userId: user.id,
+      })
+      .returning();
 
     res.status(201).json(result[0]);
   } catch (error) {

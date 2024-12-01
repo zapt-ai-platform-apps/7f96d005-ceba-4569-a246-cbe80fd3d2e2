@@ -23,7 +23,8 @@ export async function saveTask(token, task) {
   if (response.ok) {
     return response.json();
   } else {
-    throw new Error('Error saving task');
+    const errorData = await response.json();
+    throw new Error(errorData.error || 'Error saving task');
   }
 }
 
@@ -39,7 +40,8 @@ export async function updateTask(token, task) {
   if (response.ok) {
     return response.json();
   } else {
-    throw new Error('Error updating task');
+    const errorData = await response.json();
+    throw new Error(errorData.error || 'Error updating task');
   }
 }
 

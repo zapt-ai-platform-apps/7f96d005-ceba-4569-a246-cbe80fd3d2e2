@@ -69,7 +69,7 @@ function App() {
       dueDate: '',
       status: '',
       owner: '',
-      company: ''
+      company: '',
     });
   };
 
@@ -151,29 +151,34 @@ function App() {
 
   return (
     <div class="min-h-screen bg-gradient-to-br from-purple-100 to-blue-100 p-4 text-gray-800">
-      <Show when={currentPage() === 'homePage'} fallback={
-        <div class="flex items-center justify-center min-h-screen">
-          <div class="w-full max-w-md p-8 bg-white rounded-xl shadow-lg">
-            <h2 class="text-3xl font-bold mb-6 text-center text-blue-900">Sign in with ZAPT</h2>
-            <a
-              href="https://www.zapt.ai"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="text-blue-500 hover:underline mb-6 block text-center"
-            >
-              Learn more about ZAPT
-            </a>
-            <Auth
-              supabaseClient={supabase}
-              appearance={{ theme: ThemeSupa }}
-              providers={['google', 'facebook', 'apple']}
-              magicLink={true}
-              showLinks={false}
-              authView="magic_link"
-            />
+      <Show
+        when={currentPage() === 'homePage'}
+        fallback={
+          <div class="flex items-center justify-center min-h-screen">
+            <div class="w-full max-w-md p-8 bg-white rounded-xl shadow-lg">
+              <h2 class="text-3xl font-bold mb-6 text-center text-blue-900">
+                Sign in with ZAPT
+              </h2>
+              <a
+                href="https://www.zapt.ai"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="text-blue-500 hover:underline mb-6 block text-center"
+              >
+                Learn more about ZAPT
+              </a>
+              <Auth
+                supabaseClient={supabase}
+                appearance={{ theme: ThemeSupa }}
+                providers={['google', 'facebook', 'apple']}
+                magicLink={true}
+                showLinks={false}
+                authView="magic_link"
+              />
+            </div>
           </div>
-        </div>
-      }>
+        }
+      >
         <div class="max-w-6xl mx-auto">
           <div class="flex justify-between items-center mb-8">
             <h1 class="text-4xl font-bold text-blue-900">To Do List</h1>
@@ -209,6 +214,7 @@ function App() {
 
           <Show when={showForm()}>
             <TaskForm
+              token={token()}
               onSubmit={handleSaveTask}
               onCancel={() => setShowForm(false)}
               isEdit={isEdit()}
