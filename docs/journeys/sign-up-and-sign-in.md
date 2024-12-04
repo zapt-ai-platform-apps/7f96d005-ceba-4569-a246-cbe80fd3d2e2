@@ -2,14 +2,14 @@
 
 ## Summary
 
-Create an account or sign in to start using the To Do List app.
+Create an account or sign in to start using the Task Manager app.
 
 ## Steps
 
 1. **Open the App**
 
    - Navigate to the app URL in your web browser.
-   
+
 2. **Access the Sign In Page**
 
    - You will be presented with the sign-in interface.

@@ -2,7 +2,7 @@
 
 ## Summary
 
-Add a new task to your To Do list with detailed information.
+Add a new task to your task list with detailed information.
 
 ## Steps
 

@@ -1,12 +1,12 @@
-# To Do List App
+# Task Manager App
 
-A modern, vibrant, and user-friendly To Do List application that allows users to create, manage, and share their tasks efficiently. The app supports authentication via Supabase and stores tasks in a database for efficient tracking and retrieval.
+A modern, vibrant, and user-friendly Task Manager application that allows users to create, manage, and share their tasks efficiently. The app supports authentication via Supabase and stores tasks in a database for efficient tracking and retrieval.
 
 ## User Journeys
 
 1. [Sign Up and Sign In](docs/journeys/sign-up-and-sign-in.md) - Create an account or sign in to start using the app.
 
-2. [Create a New Task](docs/journeys/create-new-task.md) - Add a new task to your To Do list with detailed information.
+2. [Create a New Task](docs/journeys/create-new-task.md) - Add a new task to your task list with detailed information.
 
 3. [View and Filter Tasks](docs/journeys/view-and-filter-tasks.md) - View your tasks in a neat table and apply filters.
 
