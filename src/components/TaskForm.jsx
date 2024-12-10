@@ -1,5 +1,7 @@
-import { createSignal, Show, onMount } from 'solid-js';
+import { createSignal, Show, onMount, For } from 'solid-js';
 import { fetchTasks } from '../services/taskService';
+import DataListInput from './DataListInput';
+import SelectField from './SelectField';
 
 function TaskForm(props) {
   const [task, setTask] = createSignal(
@@ -22,7 +24,7 @@ function TaskForm(props) {
 
   onMount(async () => {
     try {
-      const tasksData = await fetchTasks(props.token);
+      const tasksData = await fetchTasks();
       const projects = [
         ...new Set(tasksData.map((t) => t.project).filter(Boolean)),
       ];
@@ -64,79 +66,65 @@ function TaskForm(props) {
           required
         />
 
-        <select
-          value={task().priority}
-          onInput={(e) => setTask({ ...task(), priority: e.target.value })}
-          class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-400 focus:border-transparent cursor-pointer"
-        >
-          <option value="">Select Priority</option>
-          <For each={priorityOptions()}>
-            {(option) => <option value={option}>{option}</option>}
-          </For>
-        </select>
-
-        <input
-          type="text"
-          placeholder="Project"
-          list="projectOptions"
-          value={task().project}
-          onInput={(e) => setTask({ ...task(), project: e.target.value })}
-          class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-400 focus:border-transparent box-border"
+        <SelectField
+          label="Select Priority"
+          value={() => task().priority}
+          onInput={(e) =>
+            setTask({ ...task(), priority: e.target.value })
+          }
+          options={priorityOptions}
         />
-        <datalist id="projectOptions">
-          <For each={projectOptions()}>
-            {(option) => <option value={option} />}
-          </For>
-        </datalist>
+
+        <DataListInput
+          placeholder="Project"
+          value={() => task().project}
+          onInput={(e) =>
+            setTask({ ...task(), project: e.target.value })
+          }
+          options={projectOptions}
+          dataListId="projectOptions"
+        />
 
         <div>
           <label class="block text-gray-700 mb-1">Due Date</label>
           <input
             type="date"
             value={task().dueDate}
-            onInput={(e) => setTask({ ...task(), dueDate: e.target.value })}
+            onInput={(e) =>
+              setTask({ ...task(), dueDate: e.target.value })
+            }
             class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-400 focus:border-transparent box-border"
           />
         </div>
 
-        <select
-          value={task().status}
-          onInput={(e) => setTask({ ...task(), status: e.target.value })}
-          class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-400 focus:border-transparent cursor-pointer"
-        >
-          <option value="">Select Status</option>
-          <For each={statusOptions()}>
-            {(option) => <option value={option}>{option}</option>}
-          </For>
-        </select>
+        <SelectField
+          label="Select Status"
+          value={() => task().status}
+          onInput={(e) =>
+            setTask({ ...task(), status: e.target.value })
+          }
+          options={statusOptions}
+        />
 
-        <input
-          type="text"
+        <DataListInput
           placeholder="Owner"
-          list="ownerOptions"
-          value={task().owner}
-          onInput={(e) => setTask({ ...task(), owner: e.target.value })}
-          class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-400 focus:border-transparent box-border"
+          value={() => task().owner}
+          onInput={(e) =>
+            setTask({ ...task(), owner: e.target.value })
+          }
+          options={ownerOptions}
+          dataListId="ownerOptions"
         />
-        <datalist id="ownerOptions">
-          <For each={ownerOptions()}>
-            {(option) => <option value={option} />}
-          </For>
-        </datalist>
 
-        <input
-          type="text"
+        <DataListInput
           placeholder="Company"
-          list="companyOptions"
-          value={task().company}
-          onInput={(e) => setTask({ ...task(), company: e.target.value })}
-          class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-400 focus:border-transparent box-border"
+          value={() => task().company}
+          onInput={(e) =>
+            setTask({ ...task(), company: e.target.value })
+          }
+          options={companyOptions}
+          dataListId="companyOptions"
         />
-        <datalist id="companyOptions">
-          <For each={companyOptions()}>
-            {(option) => <option value={option} />}
-          </For>
-        </datalist>
 
         <div class="flex space-x-4">
           <button

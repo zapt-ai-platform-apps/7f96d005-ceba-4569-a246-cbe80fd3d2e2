@@ -1,4 +1,9 @@
-export async function fetchTasks(token) {
+import { supabase } from '../supabaseClient';
+
+export async function fetchTasks() {
+  const { data: { session } } = await supabase.auth.getSession();
+  const token = session.access_token;
+
   const response = await fetch('/api/getTasks', {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -11,7 +16,10 @@ export async function fetchTasks(token) {
   }
 }
 
-export async function saveTask(token, task) {
+export async function saveTask(task) {
+  const { data: { session } } = await supabase.auth.getSession();
+  const token = session.access_token;
+
   const response = await fetch('/api/saveTask', {
     method: 'POST',
     headers: {
@@ -28,7 +36,10 @@ export async function saveTask(token, task) {
   }
 }
 
-export async function updateTask(token, task) {
+export async function updateTask(task) {
+  const { data: { session } } = await supabase.auth.getSession();
+  const token = session.access_token;
+
   const response = await fetch('/api/updateTask', {
     method: 'PUT',
     headers: {
@@ -45,7 +56,10 @@ export async function updateTask(token, task) {
   }
 }
 
-export async function deleteTask(token, taskId) {
+export async function deleteTask(taskId) {
+  const { data: { session } } = await supabase.auth.getSession();
+  const token = session.access_token;
+
   const response = await fetch('/api/deleteTask', {
     method: 'DELETE',
     headers: {
