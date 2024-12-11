@@ -1,9 +1,8 @@
-import { createSignal, Show } from 'solid-js';
-import DataListInput from './DataListInput';
-import SelectField from './SelectField';
+import { createSignal, createEffect } from 'solid-js';
+import TaskFormFields from './TaskFormFields';
+import TaskFormButtons from './TaskFormButtons';
 import useTaskOptions from '../hooks/useTaskOptions';
 import * as Sentry from '@sentry/browser';
-import { priorityOptions, statusOptions } from '../constants/taskConstants';
 
 function TaskForm(props) {
   const [task, setTask] = createSignal(
@@ -17,6 +16,22 @@ function TaskForm(props) {
       company: '',
     }
   );
+
+  // Update the task signal whenever props.initialTask changes
+  createEffect(() => {
+    setTask(
+      props.initialTask || {
+        taskDescription: '',
+        priority: '',
+        project: '',
+        dueDate: '',
+        status: '',
+        owner: '',
+        company: '',
+      }
+    );
+  });
+
   const [loading, setLoading] = createSignal(false);
 
   const { projectOptions, ownerOptions, companyOptions } = useTaskOptions();
@@ -41,88 +56,18 @@ function TaskForm(props) {
         {props.isEdit ? 'Edit Task' : 'Add New Task'}
       </h2>
       <form onSubmit={handleSubmit} class="space-y-4">
-        <input
-          type="text"
-          placeholder="Task Description"
-          value={task().taskDescription}
-          onInput={(e) =>
-            setTask({ ...task(), taskDescription: e.target.value })
-          }
-          class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-400 focus:border-transparent box-border"
-          required
+        <TaskFormFields
+          task={task}
+          setTask={setTask}
+          projectOptions={projectOptions}
+          ownerOptions={ownerOptions}
+          companyOptions={companyOptions}
         />
-
-        <SelectField
-          label="Select Priority"
-          value={() => task().priority}
-          onInput={(e) => setTask({ ...task(), priority: e.target.value })}
-          options={priorityOptions}
+        <TaskFormButtons
+          loading={loading}
+          isEdit={props.isEdit}
+          onCancel={props.onCancel}
         />
-
-        <DataListInput
-          placeholder="Project"
-          value={() => task().project}
-          onInput={(e) => setTask({ ...task(), project: e.target.value })}
-          options={projectOptions}
-          dataListId="projectOptions"
-        />
-
-        <div>
-          <label class="block text-gray-700 mb-1">Due Date</label>
-          <input
-            type="date"
-            value={task().dueDate}
-            onInput={(e) => setTask({ ...task(), dueDate: e.target.value })}
-            class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-400 focus:border-transparent box-border"
-          />
-        </div>
-
-        <SelectField
-          label="Select Status"
-          value={() => task().status}
-          onInput={(e) => setTask({ ...task(), status: e.target.value })}
-          options={statusOptions}
-        />
-
-        <DataListInput
-          placeholder="Owner"
-          value={() => task().owner}
-          onInput={(e) => setTask({ ...task(), owner: e.target.value })}
-          options={ownerOptions}
-          dataListId="ownerOptions"
-        />
-
-        <DataListInput
-          placeholder="Company"
-          value={() => task().company}
-          onInput={(e) => setTask({ ...task(), company: e.target.value })}
-          options={companyOptions}
-          dataListId="companyOptions"
-        />
-
-        <div class="flex space-x-4">
-          <button
-            type="submit"
-            class={`flex-1 px-6 py-3 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition duration-300 ease-in-out transform hover:scale-105 cursor-pointer ${
-              loading() ? 'opacity-50 cursor-not-allowed' : ''
-            }`}
-            disabled={loading()}
-          >
-            <Show when={loading()}>
-              {props.isEdit ? 'Updating...' : 'Saving...'}
-            </Show>
-            <Show when={!loading()}>
-              {props.isEdit ? 'Update Task' : 'Save Task'}
-            </Show>
-          </button>
-          <button
-            type="button"
-            class="flex-1 px-6 py-3 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition duration-300 ease-in-out transform hover:scale-105 cursor-pointer"
-            onClick={props.onCancel}
-          >
-            Cancel
-          </button>
-        </div>
       </form>
     </div>
   );

@@ -1,4 +1,10 @@
 function TaskRow(props) {
+  const handleDelete = () => {
+    if (confirm('Are you sure you want to delete this task?')) {
+      props.onDelete(props.task.id);
+    }
+  };
+
   return (
     <tr>
       <td class="px-6 py-4 whitespace-nowrap">
@@ -35,7 +41,7 @@ function TaskRow(props) {
         {' | '}
         <button
           class="text-red-600 hover:text-red-900 cursor-pointer"
-          onClick={() => props.onDelete(props.task.id)}
+          onClick={handleDelete}
         >
           Delete
         </button>
