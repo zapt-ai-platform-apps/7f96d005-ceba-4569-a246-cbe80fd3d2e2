@@ -34,7 +34,7 @@ export default async function handler(req, res) {
     const sql = postgres(process.env.COCKROACH_DB_URL);
     const db = drizzle(sql);
 
-    await db.deleteFrom(tasks)
+    await db.delete(tasks)
       .where(and(eq(tasks.id, id), eq(tasks.userId, user.id)));
 
     res.status(200).json({ success: true });
