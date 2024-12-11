@@ -10,6 +10,9 @@ import {
   updateTask,
   deleteTask,
 } from '../services/taskService';
+import * as Sentry from '@sentry/browser';
+import Header from './Header';
+import TaskActions from './TaskActions';
 
 function HomePage() {
   const [loading, setLoading] = createSignal(false);
@@ -49,6 +52,8 @@ function HomePage() {
       setRefreshTasks(true);
     } catch (error) {
       console.error('Error deleting task:', error);
+      Sentry.captureException(error);
+      alert('An error occurred while deleting the task.');
     } finally {
       setLoading(false);
     }
@@ -66,6 +71,7 @@ function HomePage() {
       setShowForm(false);
     } catch (error) {
       console.error('Error saving task:', error);
+      Sentry.captureException(error);
       alert('Error saving task');
     } finally {
       setLoading(false);
@@ -86,6 +92,8 @@ function HomePage() {
       );
     } catch (error) {
       console.error('Error exporting tasks:', error);
+      Sentry.captureException(error);
+      alert('An error occurred while exporting tasks.');
     } finally {
       setLoading(false);
     }
@@ -108,42 +116,21 @@ function HomePage() {
       }
     } catch (error) {
       console.error('Error sharing tasks:', error);
+      Sentry.captureException(error);
+      alert('An error occurred while sharing tasks.');
     }
   };
 
   return (
     <div class="max-w-6xl mx-auto">
-      <div class="flex justify-between items-center mb-8">
-        <h1 class="text-4xl font-bold text-blue-900">Task Manager</h1>
-        <button
-          class="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-6 rounded-full shadow-md focus:outline-none focus:ring-2 focus:ring-red-400 cursor-pointer transition duration-300 ease-in-out transform hover:scale-105"
-          onClick={handleSignOut}
-        >
-          Sign Out
-        </button>
-      </div>
+      <Header onSignOut={handleSignOut} />
 
-      <button
-        class="mb-4 px-6 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 transition duration-300 ease-in-out transform hover:scale-105 cursor-pointer"
-        onClick={handleAddTask}
-      >
-        Add New Task
-      </button>
-
-      <button
-        class="mb-4 ml-4 px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition duration-300 ease-in-out transform hover:scale-105 cursor-pointer"
-        onClick={handleExportTasks}
-        disabled={loading()}
-      >
-        Export to Excel
-      </button>
-
-      <button
-        class="mb-4 ml-4 px-6 py-3 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition duration-300 ease-in-out transform hover:scale-105 cursor-pointer"
-        onClick={handleShareTasks}
-      >
-        Share Tasks
-      </button>
+      <TaskActions
+        loading={loading}
+        onAddTask={handleAddTask}
+        onExportTasks={handleExportTasks}
+        onShareTasks={handleShareTasks}
+      />
 
       <Show when={showForm()}>
         <TaskForm
